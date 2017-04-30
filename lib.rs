@@ -148,8 +148,8 @@ impl Registry {
     }
 
     pub fn get_crate_data(&mut self, krate: &str) -> Result<String> {
-        let body = try!(self.get(format!("/crates/{}", krate)));
-        Ok(body)
+        self.handle.get(true)?;
+        self.req(format!("/crates/{}", krate), None, Auth::Unauthorized)
     }
 
     pub fn publish(&mut self, krate: &NewCrate, tarball: &File)
