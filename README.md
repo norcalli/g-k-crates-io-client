@@ -4,3 +4,7 @@
 
 
 Fork of [crates-io](https://crates.io/crates/crates-io) that adds `Registry::get_crate_data` for use in https://github.com/g-k/cargo-show
+
+### Contributors
+
+[@leoschwarz](https://github.com/leoschwarz)
