@@ -155,6 +155,15 @@ impl Registry {
         self.req(format!("/crates/{}", krate), None, Auth::Unauthorized)
     }
 
+    pub fn get_crate_dependencies(&mut self, krate: &str, version: &str) -> Result<String> {
+        // The following URL is supposed to be obtained from crates.io, see
+        // `$krate.versions[$].links.dependencies`
+        // But let's assume that it always is constant:
+        // `/api/v1/crates/$krate/$version/dependencies`
+        self.handle.get(true)?;
+        self.req(format!("/crates/{}/{}/dependencies", krate, version), None, Auth::Unauthorized)
+    }
+
     pub fn publish(&mut self, krate: &NewCrate, tarball: &File) -> Result<Warnings> {
         let json = serde_json::to_string(krate)?;
         // Prepare the body. The format of the upload request is:
