@@ -8,3 +8,4 @@ Fork of [crates-io](https://crates.io/crates/crates-io) that adds `Registry::get
 ### Contributors
 
 [@leoschwarz](https://github.com/leoschwarz)
+[@pravic](https://github.com/pravic)
