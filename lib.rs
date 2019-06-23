@@ -55,7 +55,8 @@ pub struct NewCrate {
     pub license_file: Option<String>,
     pub repository: Option<String>,
     pub badges: BTreeMap<String, BTreeMap<String, String>>,
-    #[serde(default)] pub links: Option<String>,
+    #[serde(default)]
+    pub links: Option<String>,
 }
 
 #[derive(Serialize)]
@@ -67,7 +68,8 @@ pub struct NewCrateDependency {
     pub version_req: String,
     pub target: Option<String>,
     pub kind: String,
-    #[serde(skip_serializing_if = "Option::is_none")] pub registry: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registry: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -161,7 +163,11 @@ impl Registry {
         // But let's assume that it always is constant:
         // `/api/v1/crates/$krate/$version/dependencies`
         self.handle.get(true)?;
-        self.req(format!("/crates/{}/{}/dependencies", krate, version), None, Auth::Unauthorized)
+        self.req(
+            format!("/crates/{}/{}/dependencies", krate, version),
+            None,
+            Auth::Unauthorized,
+        )
     }
 
     pub fn publish(&mut self, krate: &NewCrate, tarball: &File) -> Result<Warnings> {
@@ -181,8 +187,9 @@ impl Registry {
                     (json.len() >> 8) as u8,
                     (json.len() >> 16) as u8,
                     (json.len() >> 24) as u8,
-                ].iter()
-                    .map(|x| *x),
+                ]
+                .iter()
+                .map(|x| *x),
             );
             w.extend(json.as_bytes().iter().map(|x| *x));
             w.extend(
@@ -191,8 +198,9 @@ impl Registry {
                     (stat.len() >> 8) as u8,
                     (stat.len() >> 16) as u8,
                     (stat.len() >> 24) as u8,
-                ].iter()
-                    .map(|x| *x),
+                ]
+                .iter()
+                .map(|x| *x),
             );
             w
         };
@@ -209,6 +217,7 @@ impl Registry {
         self.handle.url(&url)?;
         self.handle.in_filesize(size as u64)?;
         let mut headers = List::new();
+        headers.append("User-Agent: cargo-show")?;
         headers.append("Accept: application/json")?;
         headers.append(&format!("Authorization: {}", token))?;
         self.handle.http_headers(headers)?;
@@ -283,6 +292,7 @@ impl Registry {
     fn req(&mut self, path: String, body: Option<&[u8]>, authorized: Auth) -> Result<String> {
         self.handle.url(&format!("{}/api/v1{}", self.host, path))?;
         let mut headers = List::new();
+        headers.append("User-Agent: cargo-show")?;
         headers.append("Accept: application/json")?;
         headers.append("Content-Type: application/json")?;
 
@@ -325,8 +335,6 @@ fn handle(handle: &mut Easy, read: &mut FnMut(&mut [u8]) -> usize) -> Result<Str
     match handle.response_code()? {
         0 => {} // file upload url sometimes
         200 => {}
-        403 => bail!("received 403 unauthorized response code"),
-        404 => bail!("received 404 not found response code"),
         code => bail!(
             "failed to get a 200 OK response, got {}\n\
              headers:\n\
