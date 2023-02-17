@@ -315,7 +315,7 @@ impl Registry {
     }
 }
 
-fn handle(handle: &mut Easy, read: &mut FnMut(&mut [u8]) -> usize) -> Result<String> {
+fn handle(handle: &mut Easy, read: &mut dyn FnMut(&mut [u8]) -> usize) -> Result<String> {
     let mut headers = Vec::new();
     let mut body = Vec::new();
     {

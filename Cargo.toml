@@ -14,7 +14,7 @@ name = "g_k_crates_io_client"
 path = "lib.rs"
 
 [dependencies]
-curl = "0.4"
+curl = { version = "0.4", features = ["static-curl", "static-ssl"] }
 failure = "0.1.1"
 serde = "1.0"
 serde_derive = "1.0"
